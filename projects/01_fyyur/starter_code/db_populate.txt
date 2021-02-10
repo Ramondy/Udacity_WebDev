@@ -19,12 +19,15 @@ INSERT INTO genres (name) VALUES ('Punk');
 INSERT INTO genres (name) VALUES ('Soul');
 INSERT INTO genres (name) VALUES ('Other');
 
+INSERT INTO areas (city, state) VALUES ('San Francisco', 'CA');
+INSERT INTO areas (city, state) VALUES ('New York', 'NY');
 
-INSERT INTO venues (name, address, city, state, phone, website, facebook_link, seeking_talent, seeking_description, image_link) VALUES ('The Musical Hop', '1015 Folsom Street', 'San Francisco', 'CA', '123-123-1234', 'https://www.themusicalhop.com', 'https://www.facebook.com/TheMusicalHop', True, 'We are on the lookout for a local artist to play every two weeks. Please call us.', 'https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60');
 
-INSERT INTO venues (name, address, city, state, phone, website, facebook_link, seeking_talent, image_link) VALUES ('The Dueling Pianos Bar', '335 Delancey Street', 'New York', 'NY', '914-003-1132', 'https://www.theduelingpianos.com', 'https://www.facebook.com/theduelingpianos', False,  'https://images.unsplash.com/photo-1497032205916-ac775f0649ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80');
+INSERT INTO venues (name, address, area_id, phone, website, facebook_link, seeking_talent, seeking_description, image_link) VALUES ('The Musical Hop', '1015 Folsom Street', 1, '123-123-1234', 'https://www.themusicalhop.com', 'https://www.facebook.com/TheMusicalHop', True, 'We are on the lookout for a local artist to play every two weeks. Please call us.', 'https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60');
 
-INSERT INTO venues (name, address, city, state, phone, website, facebook_link, seeking_talent, image_link) VALUES ('Park Square Live Music & Coffee', '34 Whiskey Moore Ave', 'San Francisco', 'CA', '415-000-1234', 'https://www.parksquarelivemusicandcoffee.com', 'https://www.facebook.com/ParkSquareLiveMusicAndCoffee', False, 'https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80');
+INSERT INTO venues (name, address, area_id, phone, website, facebook_link, seeking_talent, image_link) VALUES ('The Dueling Pianos Bar', '335 Delancey Street', 2, '914-003-1132', 'https://www.theduelingpianos.com', 'https://www.facebook.com/theduelingpianos', False,  'https://images.unsplash.com/photo-1497032205916-ac775f0649ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80');
+
+INSERT INTO venues (name, address, area_id, phone, website, facebook_link, seeking_talent, image_link) VALUES ('Park Square Live Music & Coffee', '34 Whiskey Moore Ave', 1, '415-000-1234', 'https://www.parksquarelivemusicandcoffee.com', 'https://www.facebook.com/ParkSquareLiveMusicAndCoffee', False, 'https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80');
 
 
 INSERT INTO genre_venues (venue_id, genre_id) VALUES (1, 1);
@@ -41,11 +44,11 @@ INSERT INTO genre_venues (venue_id, genre_id) VALUES (3, 4);
 INSERT INTO genre_venues (venue_id, genre_id) VALUES (3, 5);
 
 
-INSERT INTO artists (name, city, state, phone, website, facebook_link, seeking_venue, seeking_description, image_link) VALUES ('Guns N Petals', 'San Francisco', 'CA', '326-123-5000', 'https://www.gunsnpetalsband.com', 'https://www.facebook.com/GunsNPetals', True, 'Looking for shows to perform at in the San Francisco Bay Area!', 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80');
+INSERT INTO artists (name, area_id, phone, website, facebook_link, seeking_venue, seeking_description, image_link) VALUES ('Guns N Petals', 1, '326-123-5000', 'https://www.gunsnpetalsband.com', 'https://www.facebook.com/GunsNPetals', True, 'Looking for shows to perform at in the San Francisco Bay Area!', 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80');
 
-INSERT INTO artists (name, city, state, phone, facebook_link, seeking_venue, image_link) VALUES ('Matt Quevedo', 'New York', 'NY', '300-400-5000', 'https://www.facebook.com/mattquevedo923251523', False, 'https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80');
+INSERT INTO artists (name, area_id, phone, facebook_link, seeking_venue, image_link) VALUES ('Matt Quevedo', 2, '300-400-5000', 'https://www.facebook.com/mattquevedo923251523', False, 'https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80');
 
-INSERT INTO artists (name, city, state, phone, seeking_venue, image_link) VALUES ('The Wild Sax Band', 'San Francisco', 'CA', '432-325-5432', True, 'https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80');
+INSERT INTO artists (name, area_id, phone, seeking_venue, image_link) VALUES ('The Wild Sax Band', 1, '432-325-5432', False, 'https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80');
 
 
 INSERT INTO genre_artists(artist_id, genre_id) VALUES (1, 8);
