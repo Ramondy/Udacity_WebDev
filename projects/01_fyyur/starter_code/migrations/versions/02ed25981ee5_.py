@@ -25,17 +25,17 @@ def upgrade():
     )
     op.create_table('genre_artists',
     sa.Column('artist_id', sa.Integer(), nullable=False),
-    sa.Column('genres_id', sa.Integer(), nullable=False),
+    sa.Column('genre_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['artist_id'], ['artists.id'], ),
-    sa.ForeignKeyConstraint(['genres_id'], ['genres.id'], ),
-    sa.PrimaryKeyConstraint('artist_id', 'genres_id')
+    sa.ForeignKeyConstraint(['genre_id'], ['genres.id'], ),
+    sa.PrimaryKeyConstraint('artist_id', 'genre_id')
     )
     op.create_table('genre_venues',
     sa.Column('venue_id', sa.Integer(), nullable=False),
-    sa.Column('genres_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['genres_id'], ['genres.id'], ),
+    sa.Column('genre_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['genre_id'], ['genres.id'], ),
     sa.ForeignKeyConstraint(['venue_id'], ['venues.id'], ),
-    sa.PrimaryKeyConstraint('venue_id', 'genres_id')
+    sa.PrimaryKeyConstraint('venue_id', 'genre_id')
     )
     op.create_table('shows',
     sa.Column('venue_id', sa.Integer(), nullable=False),
@@ -43,9 +43,10 @@ def upgrade():
     sa.Column('start_time', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['artist_id'], ['artists.id'], ),
     sa.ForeignKeyConstraint(['venue_id'], ['venues.id'], ),
-    sa.PrimaryKeyConstraint('venue_id', 'artist_id')
+    sa.PrimaryKeyConstraint('venue_id', 'artist_id', 'start_time')
     )
     op.add_column('artists', sa.Column('seeking_venue', sa.Boolean(), nullable=True))
+    op.add_column('artists', sa.Column('seeking_description', sa.String(length=500), nullable=True))
     op.add_column('artists', sa.Column('website', sa.String(length=120), nullable=True))
     op.drop_column('artists', 'genres')
     op.add_column('venues', sa.Column('seeking_description', sa.String(length=500), nullable=True))
@@ -62,6 +63,7 @@ def downgrade():
     op.add_column('artists', sa.Column('genres', sa.VARCHAR(length=120), autoincrement=False, nullable=True))
     op.drop_column('artists', 'website')
     op.drop_column('artists', 'seeking_venue')
+    op.drop_column('artists', 'seeking_description')
     op.drop_table('shows')
     op.drop_table('genre_venues')
     op.drop_table('genre_artists')

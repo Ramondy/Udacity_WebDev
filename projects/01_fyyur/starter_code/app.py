@@ -33,17 +33,17 @@ migrate = Migrate(app, db)
 shows = db.Table('shows',
                  db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'), primary_key=True),
                  db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
-                 db.Column('start_time', db.String())
+                 db.Column('start_time', db.String(), primary_key=True)
                  )
 
 genre_venues = db.Table('genre_venues',
                  db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'), primary_key=True),
-                 db.Column('genres_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
+                 db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
                  )
 
 genre_artists = db.Table('genre_artists',
                  db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
-                 db.Column('genres_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
+                 db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
                  )
 
 class Genre(db.Model):
@@ -94,6 +94,7 @@ class Artist(db.Model):
     # ADD MISSING FIELDS
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean)
+    seeking_description = db.Column(db.String(500))
 
     # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
 

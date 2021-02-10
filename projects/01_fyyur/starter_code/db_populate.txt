@@ -1,0 +1,62 @@
+INSERT INTO genres (name) VALUES ('Jazz');
+INSERT INTO genres (name) VALUES ('Reggae');
+INSERT INTO genres (name) VALUES ('Swing');
+INSERT INTO genres (name) VALUES ('Classical');
+INSERT INTO genres (name) VALUES ('Folk');
+INSERT INTO genres (name) VALUES ('R&B');
+INSERT INTO genres (name) VALUES ('Hip-Hop');
+INSERT INTO genres (name) VALUES ('Rock n Roll');
+INSERT INTO genres (name) VALUES ('Alternative');
+INSERT INTO genres (name) VALUES ('Blues');
+INSERT INTO genres (name) VALUES ('Country');
+INSERT INTO genres (name) VALUES ('Electronic');
+INSERT INTO genres (name) VALUES ('Funk');
+INSERT INTO genres (name) VALUES ('Heavy Metal');
+INSERT INTO genres (name) VALUES ('Instrumental');
+INSERT INTO genres (name) VALUES ('Musical Theatre');
+INSERT INTO genres (name) VALUES ('Pop');
+INSERT INTO genres (name) VALUES ('Punk');
+INSERT INTO genres (name) VALUES ('Soul');
+INSERT INTO genres (name) VALUES ('Other');
+
+
+INSERT INTO venues (name, address, city, state, phone, website, facebook_link, seeking_talent, seeking_description, image_link) VALUES ('The Musical Hop', '1015 Folsom Street', 'San Francisco', 'CA', '123-123-1234', 'https://www.themusicalhop.com', 'https://www.facebook.com/TheMusicalHop', True, 'We are on the lookout for a local artist to play every two weeks. Please call us.', 'https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60');
+
+INSERT INTO venues (name, address, city, state, phone, website, facebook_link, seeking_talent, image_link) VALUES ('The Dueling Pianos Bar', '335 Delancey Street', 'New York', 'NY', '914-003-1132', 'https://www.theduelingpianos.com', 'https://www.facebook.com/theduelingpianos', False,  'https://images.unsplash.com/photo-1497032205916-ac775f0649ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80');
+
+INSERT INTO venues (name, address, city, state, phone, website, facebook_link, seeking_talent, image_link) VALUES ('Park Square Live Music & Coffee', '34 Whiskey Moore Ave', 'San Francisco', 'CA', '415-000-1234', 'https://www.parksquarelivemusicandcoffee.com', 'https://www.facebook.com/ParkSquareLiveMusicAndCoffee', False, 'https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80');
+
+
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (1, 1);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (1, 2);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (1, 3);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (1, 4);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (1, 5);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (2, 4);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (2, 6);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (2, 7);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (3, 8);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (3, 1);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (3, 4);
+INSERT INTO genre_venues (venue_id, genre_id) VALUES (3, 5);
+
+
+INSERT INTO artists (name, city, state, phone, website, facebook_link, seeking_venue, seeking_description, image_link) VALUES ('Guns N Petals', 'San Francisco', 'CA', '326-123-5000', 'https://www.gunsnpetalsband.com', 'https://www.facebook.com/GunsNPetals', True, 'Looking for shows to perform at in the San Francisco Bay Area!', 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80');
+
+INSERT INTO artists (name, city, state, phone, facebook_link, seeking_venue, image_link) VALUES ('Matt Quevedo', 'New York', 'NY', '300-400-5000', 'https://www.facebook.com/mattquevedo923251523', False, 'https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80');
+
+INSERT INTO artists (name, city, state, phone, seeking_venue, image_link) VALUES ('The Wild Sax Band', 'San Francisco', 'CA', '432-325-5432', True, 'https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80');
+
+
+INSERT INTO genre_artists(artist_id, genre_id) VALUES (1, 8);
+INSERT INTO genre_artists(artist_id, genre_id) VALUES (2, 1);
+INSERT INTO genre_artists(artist_id, genre_id) VALUES (3, 1);
+INSERT INTO genre_artists(artist_id, genre_id) VALUES (3, 4);
+
+
+INSERT INTO shows(venue_id, artist_id, start_time) VALUES (1, 1, '2019-05-21T21:30:00.000Z');
+INSERT INTO shows(venue_id, artist_id, start_time) VALUES (3, 2, '2019-06-15T23:00:00.000Z');
+INSERT INTO shows(venue_id, artist_id, start_time) VALUES (3, 3, '2035-04-01T20:00:00.000Z');
+INSERT INTO shows(venue_id, artist_id, start_time) VALUES (3, 3, '2035-04-08T20:00:00.000Z');
+INSERT INTO shows(venue_id, artist_id, start_time) VALUES (3, 3, '2035-04-15T20:00:00.000Z');
+
