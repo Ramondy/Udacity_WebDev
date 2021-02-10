@@ -36,6 +36,22 @@ shows = db.Table('shows',
                  db.Column('start_time', db.String())
                  )
 
+genre_venues = db.Table('genre_venues',
+                 db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'), primary_key=True),
+                 db.Column('genres_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
+                 )
+
+genre_artists = db.Table('genre_artists',
+                 db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
+                 db.Column('genres_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
+                 )
+
+class Genre(db.Model):
+    __tablename__ = 'genres'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+
 
 class Venue(db.Model):
     __tablename__ = 'venues'
@@ -46,11 +62,19 @@ class Venue(db.Model):
     state = db.Column(db.String(120))
     address = db.Column(db.String(120))
     phone = db.Column(db.String(120))
-    genres = db.Column(db.String(120))  # DONE
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
 
+    # ADD MISSING FIELDS
+    website = db.Column(db.String(120))
+    seeking_talent = db.Column(db.Boolean)
+    seeking_description = db.Column(db.String(500))
+
+    # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
+
+    # RELATIONSHIPS
     artists = db.relationship('Artist', secondary=shows, backref=db.backref('venues', lazy=True))
+    genres = db.relationship('Genres', secondary=genre_venues, backref=db.backref('venues', lazy=True))
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -66,6 +90,17 @@ class Artist(db.Model):
     genres = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
+
+    # ADD MISSING FIELDS
+    website = db.Column(db.String(120))
+    seeking_venue = db.Column(db.Boolean)
+
+    # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
+
+    # RELATIONSHIPS
+    genres = db.relationship('Genres', secondary=genre_artists, backref=db.backref('artists', lazy=True))
+
+
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
