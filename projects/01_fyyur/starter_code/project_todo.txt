@@ -17,8 +17,17 @@ DONE: /venues/<id>
 DONE: /artists
 DONE: /artists/<id>
 
-DONE : normaliser shows + showtimes
-/shows
+DONE: normaliser shows + showtimes
+DONE: /shows
+
+
+https://knowledge.udacity.com/questions/452402
+PENDING: DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
+venue.upcoming_shows_count
+venue.upcoming_shows
+venue.past_shows_count
+venue.past_shows
+
 
 /venues/search
 /artists/search
@@ -27,11 +36,7 @@ DONE : normaliser shows + showtimes
 
 
 
-PENDING: DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
-venue.upcoming_shows_count
-venue.upcoming_shows
-venue.past_shows_count
-venue.past_shows
+
 
 artist.upcoming_shows_count
 artist.upcoming_shows
