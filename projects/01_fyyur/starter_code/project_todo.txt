@@ -1,4 +1,7 @@
+pg_ctl -D "C:\Program Files\PostgreSQL\13\data" start
+
 cd FSND/projects/01_fyyur/starter_code
+
 
 
 DONE: - psql: create db
@@ -14,9 +17,8 @@ DONE: /venues/<id>
 DONE: /artists
 DONE: /artists/<id>
 
+DONE : normaliser shows + showtimes
 /shows
-implementer en tant que classe a part entiere, pas table d'association
-
 
 /venues/search
 /artists/search

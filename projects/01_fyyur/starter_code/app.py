@@ -30,12 +30,6 @@ migrate = Migrate(app, db)
 # Models.
 # ----------------------------------------------------------------------------#
 
-shows = db.Table('shows',
-                 db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'), primary_key=True),
-                 db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
-                 db.Column('start_time', db.String(), primary_key=True)
-                 )
-
 genre_venues = db.Table('genre_venues',
                  db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'), primary_key=True),
                  db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
@@ -45,6 +39,7 @@ genre_artists = db.Table('genre_artists',
                  db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
                  db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
                  )
+
 
 class Genre(db.Model):
     __tablename__ = 'genres'
@@ -80,6 +75,7 @@ class Artist(db.Model):
     # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
 
     # RELATIONSHIPS
+    shows = db.relationship('Shows', backref='artist')
     genres = db.relationship('Genre', secondary=genre_artists, backref=db.backref('artists', lazy=True))
 
 
@@ -102,13 +98,23 @@ class Venue(db.Model):
     # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
 
     # RELATIONSHIPS
-    artists = db.relationship('Artist', secondary=shows, backref=db.backref('venues', lazy=True))
+    shows = db.relationship('Shows', backref='venue')
     genres = db.relationship('Genre', secondary=genre_venues, backref=db.backref('venues', lazy=True))
 
-#class Shows(db.Model):
-#    __tablename__ = 'shows'
 
-#    id = db.Column(db.Integer, primary_key=True)
+class Shows(db.Model):
+    __tablename__ = 'shows'
+
+    id = db.Column(db.Integer, primary_key=True)
+    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
+    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
+
+
+class Showtimes(db.Model):
+    __tablename__ = 'showtimes'
+
+    show_id = db.Column(db.Integer, primary_key=True)
+    show_time = db.Column(db.String(), primary_key=True)
 
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
