@@ -1,7 +1,14 @@
 pg_ctl -D "C:\Program Files\PostgreSQL\13\data" start
 
 cd FSND/projects/01_fyyur/starter_code
+cd projects/01_fyyur/starter_code
 
+export FLASK_APP=app.py
+export FLASK_DEBUG=true
+flask run
+
+from app import db, Area, Artist, Venue, Show, Showtime
+from datetime import datetime, date
 
 
 DONE: - psql: create db
@@ -27,6 +34,31 @@ venue.upcoming_shows_count
 venue.upcoming_shows
 venue.past_shows_count
 venue.past_shows
+
+VALID POSTGRE
+SELECT showtimes.show_id, showtimes.show_time, venues.name FROM showtimes JOIN shows ON showtimes.show_id = shows.id JOIN venues ON shows.venue_id = venues.id;
+SELECT venues.name, COUNT(showtimes.show_id)  FROM showtimes JOIN shows ON showtimes.show_id = shows.id JOIN venues ON shows.venue_id = venues.id GROUP BY (venues.name);
+
+
+showtimes = db.session.query(Showtime).join(Show).join(Venue).filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id).all()
+showtimes[0].show_time
+showtimes[0].show_time > datetime.now()
+
+upcoming_shows = db.session.query(Showtime).join(Show).join(Venue).filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id, Showtime.show_time > datetime.now()).all()
+upcoming_shows[0].show_id
+
+upcoming_shows = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id, Showtime.show_time > datetime.now()).all()
+
+date_time_obj = datetime.strptime('2019-05-21T21:30:00.000Z', "%Y-%m-%dT%H:%M:%S.000Z")
+date_time_obj > datetime.now()
+
+In PROGRESS
+db.session.query(Showtime).join(Show).join(Venue).filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id).all()
+
+
+
+
+
 
 
 /venues/search

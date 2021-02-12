@@ -9,7 +9,7 @@
 			<a href="/venues/{{ venue.id }}">
 				<i class="fas fa-music"></i>
 				<div class="item">
-					<h5>{{ venue.name }} -- upcoming shows: {{ venue.upcoming_shows_count }}</h5>
+					<h5>{{ venue.name }} -- upcoming shows: {{ upcoming_counter[venue.id] }}</h5>
 				</div>
 			</a>
 		</li>
