@@ -147,36 +147,128 @@ def index():
 #  Venues
 #  ----------------------------------------------------------------
 
-def count_shows_by_venue(kind):
+# def count_shows_by_venue(kind):
+#
+#     areas = Area.query.all()
+#
+#     shows_by_venue_count = {}
+#
+#     for area in areas:
+#         for venue in area.venues:
+#             shows_by_venue_count[venue.id] = 0
+#
+#     if kind == 'upcoming':
+#         shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
+#                                                                                    Show.venue_id == Venue.id,
+#                                                                                    Showtime.show_time >= datetime.now()).all()
+#     elif kind == 'past':
+#         shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
+#                                                                                    Show.venue_id == Venue.id,
+#                                                                                    Showtime.show_time < datetime.now()).all()
+#
+#     for show_time, show, venue in shows_listTuples:
+#         shows_by_venue_count[venue.id] += 1
+#
+#     return shows_by_venue_count
+
+def count_shows_by(resource, upcoming=True):
 
     areas = Area.query.all()
+    shows_by_count = {}
 
-    shows_by_venue_count = {}
+    if resource == 'Venue':
 
-    for area in areas:
-        for venue in area.venues:
-            shows_by_venue_count[venue.id] = 0
+        for area in areas:
+            for venue in area.venues:
+                shows_by_count[venue.id] = 0
 
-    if kind == 'upcoming':
-        shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
-                                                                                   Show.venue_id == Venue.id,
-                                                                                   Showtime.show_time >= datetime.now()).all()
-    elif kind == 'past':
-        shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
-                                                                                   Show.venue_id == Venue.id,
-                                                                                   Showtime.show_time < datetime.now()).all()
+        if upcoming:
+            shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
+                                                                                       Show.venue_id == Venue.id,
+                                                                                       Showtime.show_time >= datetime.now()).all()
+        if not upcoming:
+            shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
+                                                                                       Show.venue_id == Venue.id,
+                                                                                       Showtime.show_time < datetime.now()).all()
 
-    for show_time, show, venue in shows_listTuples:
-        shows_by_venue_count[venue.id] += 1
+        for show_time, show, venue in shows_listTuples:
+            shows_by_count[venue.id] += 1
 
-    return shows_by_venue_count
+    if resource == 'Artist':
 
+        for area in areas:
+            for artist in area.artists:
+                shows_by_count[artist.id] = 0
+
+        if upcoming:
+            shows_listTuples = db.session.query(Showtime, Show, Artist).filter(Showtime.show_id == Show.id,
+                                                                                       Show.artist_id == Artist.id,
+                                                                                       Showtime.show_time >= datetime.now()).all()
+        if not upcoming:
+            shows_listTuples = db.session.query(Showtime, Show, Artist).filter(Showtime.show_id == Show.id,
+                                                                                       Show.artist_id == Artist.id,
+                                                                                       Showtime.show_time < datetime.now()).all()
+
+        for show_time, show, artist in shows_listTuples:
+            shows_by_count[artist.id] += 1
+
+    return shows_by_count
+
+
+def list_shows_by(resource, upcoming=True):
+
+    areas = Area.query.all()
+    shows_by_lists = {}
+
+    if resource == 'Venue':
+
+        for area in areas:
+            for venue in area.venues:
+                shows_by_lists[venue.id] = []
+
+        if upcoming:
+            shows_listTuples = db.session\
+                .query(Showtime, Show, Artist, Venue)\
+                .filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id,
+                        Show.artist_id == Artist.id, Showtime.show_time >= datetime.now()).all()
+
+        if not upcoming:
+            shows_listTuples = db.session\
+                .query(Showtime, Show, Artist, Venue)\
+                .filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id,
+                        Show.artist_id == Artist.id, Showtime.show_time < datetime.now()).all()
+
+        for showtime, show, artist, venue in shows_listTuples:
+            shows_by_lists[venue.id].append((showtime, show, artist, venue))
+
+    if resource == 'Artist':
+
+        for area in areas:
+            for artist in area.artists:
+                shows_by_lists[artist.id] = []
+
+        if upcoming:
+            shows_listTuples = db.session\
+                .query(Showtime, Show, Artist, Venue)\
+                .filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id,
+                        Show.artist_id == Artist.id, Showtime.show_time >= datetime.now()).all()
+
+        if not upcoming:
+            shows_listTuples = db.session\
+                .query(Showtime, Show, Artist, Venue)\
+                .filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id,
+                        Show.artist_id == Artist.id, Showtime.show_time < datetime.now()).all()
+
+        for showtime, show, artist, venue in shows_listTuples:
+            shows_by_lists[artist.id].append((showtime, show, artist, venue))
+
+    return shows_by_lists
 
 @app.route('/venues')
 def venues():
 
     areas = Area.query.all()
-    return render_template('pages/venues.html', areas=areas, upcoming_counter=count_shows_by_venue('upcoming'))
+    return render_template('pages/venues.html', areas=areas, upcoming_counter=count_shows_by(resource='Venue', upcoming=True))
 
 
 @app.route('/venues/<int:venue_id>')
@@ -184,10 +276,16 @@ def show_venue(venue_id):
 
     venue = Venue.query.get(venue_id)
     area = Area.query.get(venue.area_id)
-    upcoming_counter = count_shows_by_venue('upcoming')[venue_id]
-    past_counter = count_shows_by_venue('past')[venue_id]
+
+    upcoming_shows = list_shows_by('Venue', upcoming=True)[venue_id]
+    past_shows = list_shows_by('Venue', upcoming=False)[venue_id]
+
+    upcoming_counter = count_shows_by(resource='Venue', upcoming=True)[venue_id]
+    past_counter = count_shows_by(resource='Venue', upcoming=False)[venue_id]
+
     return render_template('pages/show_venue.html', venue=venue, area=area,
-                           upcoming_counter=upcoming_counter, past_counter=past_counter)
+                           upcoming_counter=upcoming_counter, upcoming_shows=upcoming_shows,
+                           past_counter=past_counter, past_shows=past_shows)
 
 
 @app.route('/venues/search', methods=['POST'])
@@ -268,13 +366,22 @@ def search_artists():
 
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
-    # shows the venue page with the given venue_id
-    # TODO: replace with real venue data from the venues table, using venue_id
 
     artist = Artist.query.get(artist_id)
     area = Area.query.get(artist.area_id)
-    return render_template('pages/show_artist.html', artist=artist, area=area)
 
+    # shows = db.session.query(Showtime, Show, Artist, Venue)\
+    #     .filter(Showtime.show_id == Show.id, Show.artist_id == Artist.id, Show.venue_id == Venue.id).all()
+
+    upcoming_counter = count_shows_by(resource='Artist', upcoming=True)[artist_id]
+    upcoming_shows = list_shows_by('Artist', upcoming=True)[artist_id]
+
+    past_counter = count_shows_by(resource='Artist', upcoming=False)[artist_id]
+    past_shows = list_shows_by('Artist', upcoming=False)[artist_id]
+
+    return render_template('pages/show_artist.html', artist=artist, area=area,
+                           upcoming_counter=upcoming_counter, upcoming_shows=upcoming_shows,
+                           past_counter=past_counter, past_shows=past_shows)
 
 #  Update
 #  ----------------------------------------------------------------
@@ -365,7 +472,8 @@ def shows():
     # TODO: replace with real venues data.
     #       num_shows should be aggregated based on number of upcoming shows per venue.
 
-    shows = db.session.query(Showtime, Show, Artist, Venue).filter(Showtime.show_id == Show.id, Show.artist_id == Artist.id, Show.venue_id == Venue.id).all()
+    shows = db.session.query(Showtime, Show, Artist, Venue)\
+        .filter(Showtime.show_id == Show.id, Show.artist_id == Artist.id, Show.venue_id == Venue.id).all()
     return render_template('pages/shows.html', shows=shows)
 
 

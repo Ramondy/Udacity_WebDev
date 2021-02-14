@@ -27,13 +27,13 @@ DONE: /artists/<id>
 DONE: normaliser shows + showtimes
 DONE: /shows
 
-
+DONE: past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
 https://knowledge.udacity.com/questions/452402
-PENDING: DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
-venue.upcoming_shows_count
-venue.upcoming_shows
-venue.past_shows_count
-venue.past_shows
+
+
+/venues/search
+/artists/search
+
 
 VALID POSTGRE
 SELECT showtimes.show_id, showtimes.show_time, venues.name FROM showtimes JOIN shows ON showtimes.show_id = shows.id JOIN venues ON shows.venue_id = venues.id;
@@ -54,26 +54,6 @@ date_time_obj > datetime.now()
 
 In PROGRESS
 db.session.query(Showtime).join(Show).join(Venue).filter(Showtime.show_id == Show.id, Show.venue_id == Venue.id).all()
-
-
-
-
-
-
-
-/venues/search
-/artists/search
-
-
-
-
-
-
-
-artist.upcoming_shows_count
-artist.upcoming_shows
-artist.past_shows_count
-artist.past_shows
 
 
 #####

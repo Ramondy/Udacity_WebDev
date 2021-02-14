@@ -49,12 +49,12 @@
 <section>
 	<h2 class="monospace">{{ upcoming_counter }} Upcoming {% if upcoming_counter == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in venue.upcoming_shows %}
+		{%for showtime, show, artist, venue in upcoming_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<img src="{{ artist.image_link }}" alt="Show Artist Image" />
+				<h5><a href="/artists/{{ artist.id }}">{{ artist.name }}</a></h5>
+				<h6>{{ showtime.show_time.strftime("%m/%d/%Y, %H:%M") }}</h6>
 			</div>
 		</div>
 		{% endfor %}
@@ -63,12 +63,12 @@
 <section>
 	<h2 class="monospace">{{ past_counter }} Past {% if past_counter == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in venue.past_shows %}
+		{%for showtime, show, artist, venue in past_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
-				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<img src="{{ artist.image_link }}" alt="Show Artist Image" />
+				<h5><a href="/artists/{{ artist.id }}">{{ artist.name }}</a></h5>
+				<h6>{{ showtime.show_time.strftime("%m/%d/%Y, %H:%M") }}</h6>
 			</div>
 		</div>
 		{% endfor %}

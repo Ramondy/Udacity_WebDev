@@ -44,28 +44,28 @@
 	</div>
 </div>
 <section>
-	<h2 class="monospace">{{ artist.upcoming_shows_count }} Upcoming {% if artist.upcoming_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<h2 class="monospace">{{ upcoming_counter }} Upcoming {% if upcoming_counter == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in artist.upcoming_shows %}
+		{%for showtime, show, artist, venue in upcoming_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.venue_image_link }}" alt="Show Venue Image" />
-				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<img src="{{ venue.image_link }}" alt="Show Venue Image" />
+				<h5><a href="/venues/{{ venue.id }}">{{ venue.name }}</a></h5>
+				<h6>{{ showtime.show_time.strftime("%m/%d/%Y, %H:%M") }}</h6>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 </section>
 <section>
-	<h2 class="monospace">{{ artist.past_shows_count }} Past {% if artist.past_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<h2 class="monospace">{{ past_counter }} Past {% if past_counter == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in artist.past_shows %}
+		{%for showtime, show, artist, venue in past_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.venue_image_link }}" alt="Show Venue Image" />
-				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<img src="{{ venue.image_link }}" alt="Show Venue Image" />
+				<h5><a href="/venues/{{ venue.id }}">{{ venue.name }}</a></h5>
+				<h6>{{ showtime.show_time.strftime("%m/%d/%Y, %H:%M") }}</h6>
 			</div>
 		</div>
 		{% endfor %}
