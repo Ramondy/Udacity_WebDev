@@ -147,30 +147,6 @@ def index():
 #  Venues
 #  ----------------------------------------------------------------
 
-# def count_shows_by_venue(kind):
-#
-#     areas = Area.query.all()
-#
-#     shows_by_venue_count = {}
-#
-#     for area in areas:
-#         for venue in area.venues:
-#             shows_by_venue_count[venue.id] = 0
-#
-#     if kind == 'upcoming':
-#         shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
-#                                                                                    Show.venue_id == Venue.id,
-#                                                                                    Showtime.show_time >= datetime.now()).all()
-#     elif kind == 'past':
-#         shows_listTuples = db.session.query(Showtime, Show, Venue).filter(Showtime.show_id == Show.id,
-#                                                                                    Show.venue_id == Venue.id,
-#                                                                                    Showtime.show_time < datetime.now()).all()
-#
-#     for show_time, show, venue in shows_listTuples:
-#         shows_by_venue_count[venue.id] += 1
-#
-#     return shows_by_venue_count
-
 def count_shows_by(resource, upcoming=True):
 
     areas = Area.query.all()
@@ -213,7 +189,6 @@ def count_shows_by(resource, upcoming=True):
             shows_by_count[artist.id] += 1
 
     return shows_by_count
-
 
 def list_shows_by(resource, upcoming=True):
 
@@ -268,7 +243,8 @@ def list_shows_by(resource, upcoming=True):
 def venues():
 
     areas = Area.query.all()
-    return render_template('pages/venues.html', areas=areas, upcoming_counter=count_shows_by(resource='Venue', upcoming=True))
+    return render_template('pages/venues.html', areas=areas,
+                           upcoming_counter=count_shows_by(resource='Venue', upcoming=True))
 
 
 @app.route('/venues/<int:venue_id>')
@@ -286,23 +262,6 @@ def show_venue(venue_id):
     return render_template('pages/show_venue.html', venue=venue, area=area,
                            upcoming_counter=upcoming_counter, upcoming_shows=upcoming_shows,
                            past_counter=past_counter, past_shows=past_shows)
-
-
-@app.route('/venues/search', methods=['POST'])
-def search_venues():
-    # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-    # seach for Hop should return "The Musical Hop".
-    # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-    response = {
-        "count": 1,
-        "data": [{
-            "id": 2,
-            "name": "The Dueling Pianos Bar",
-            "num_upcoming_shows": 0,
-        }]
-    }
-    return render_template('pages/search_venues.html', results=response,
-                           search_term=request.form.get('search_term', ''))
 
 
 #  Create Venue
@@ -327,91 +286,28 @@ def create_venue_submission():
     return render_template('pages/home.html')
 
 
-@app.route('/venues/<venue_id>', methods=['DELETE'])
-def delete_venue(venue_id):
-    # TODO: Complete this endpoint for taking a venue_id, and using
-    # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
-    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-    # clicking that button delete it from the db then redirect the user to the homepage
-    return None
-
-
-#  Artists
+#  Search Venue
 #  ----------------------------------------------------------------
-@app.route('/artists')
-def artists():
-    # TODO: replace with real data returned from querying the database
 
-    data = Artist.query.all()
-    return render_template('pages/artists.html', artists=data)
-
-
-@app.route('/artists/search', methods=['POST'])
-def search_artists():
+@app.route('/venues/search', methods=['POST'])
+def search_venues():
     # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-    # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
-    # search for "band" should return "The Wild Sax Band".
+    # seach for Hop should return "The Musical Hop".
+    # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
     response = {
         "count": 1,
         "data": [{
-            "id": 4,
-            "name": "Guns N Petals",
+            "id": 2,
+            "name": "The Dueling Pianos Bar",
             "num_upcoming_shows": 0,
         }]
     }
-    return render_template('pages/search_artists.html', results=response,
+    return render_template('pages/search_venues.html', results=response,
                            search_term=request.form.get('search_term', ''))
 
 
-@app.route('/artists/<int:artist_id>')
-def show_artist(artist_id):
-
-    artist = Artist.query.get(artist_id)
-    area = Area.query.get(artist.area_id)
-
-    # shows = db.session.query(Showtime, Show, Artist, Venue)\
-    #     .filter(Showtime.show_id == Show.id, Show.artist_id == Artist.id, Show.venue_id == Venue.id).all()
-
-    upcoming_counter = count_shows_by(resource='Artist', upcoming=True)[artist_id]
-    upcoming_shows = list_shows_by('Artist', upcoming=True)[artist_id]
-
-    past_counter = count_shows_by(resource='Artist', upcoming=False)[artist_id]
-    past_shows = list_shows_by('Artist', upcoming=False)[artist_id]
-
-    return render_template('pages/show_artist.html', artist=artist, area=area,
-                           upcoming_counter=upcoming_counter, upcoming_shows=upcoming_shows,
-                           past_counter=past_counter, past_shows=past_shows)
-
-#  Update
+#  Update Venue
 #  ----------------------------------------------------------------
-@app.route('/artists/<int:artist_id>/edit', methods=['GET'])
-def edit_artist(artist_id):
-    form = ArtistForm()
-    artist = {
-        "id": 4,
-        "name": "Guns N Petals",
-        "genres": ["Rock n Roll"],
-        "city": "San Francisco",
-        "state": "CA",
-        "phone": "326-123-5000",
-        "website": "https://www.gunsnpetalsband.com",
-        "facebook_link": "https://www.facebook.com/GunsNPetals",
-        "seeking_venue": True,
-        "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-        "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-    }
-    # TODO: populate form with fields from artist with ID <artist_id>
-    return render_template('forms/edit_artist.html', form=form, artist=artist)
-
-
-@app.route('/artists/<int:artist_id>/edit', methods=['POST'])
-def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
-
-    return redirect(url_for('show_artist', artist_id=artist_id))
-
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
@@ -441,6 +337,48 @@ def edit_venue_submission(venue_id):
     return redirect(url_for('show_venue', venue_id=venue_id))
 
 
+#  Delete Venue
+#  ----------------------------------------------------------------
+
+@app.route('/venues/<venue_id>', methods=['DELETE'])
+def delete_venue(venue_id):
+    # TODO: Complete this endpoint for taking a venue_id, and using
+    # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+
+    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
+    # clicking that button delete it from the db then redirect the user to the homepage
+    return None
+
+
+#  Read Artists
+#  ----------------------------------------------------------------
+@app.route('/artists')
+def artists():
+    # TODO: replace with real data returned from querying the database
+
+    data = Artist.query.all()
+    return render_template('pages/artists.html', artists=data)
+
+
+@app.route('/artists/<int:artist_id>')
+def show_artist(artist_id):
+
+    artist = Artist.query.get(artist_id)
+    area = Area.query.get(artist.area_id)
+
+    # shows = db.session.query(Showtime, Show, Artist, Venue)\
+    #     .filter(Showtime.show_id == Show.id, Show.artist_id == Artist.id, Show.venue_id == Venue.id).all()
+
+    upcoming_counter = count_shows_by(resource='Artist', upcoming=True)[artist_id]
+    upcoming_shows = list_shows_by('Artist', upcoming=True)[artist_id]
+
+    past_counter = count_shows_by(resource='Artist', upcoming=False)[artist_id]
+    past_shows = list_shows_by('Artist', upcoming=False)[artist_id]
+
+    return render_template('pages/show_artist.html', artist=artist, area=area,
+                           upcoming_counter=upcoming_counter, upcoming_shows=upcoming_shows,
+                           past_counter=past_counter, past_shows=past_shows)
+
 #  Create Artist
 #  ----------------------------------------------------------------
 
@@ -463,7 +401,60 @@ def create_artist_submission():
     return render_template('pages/home.html')
 
 
-#  Shows
+#  Search Artist
+#  ----------------------------------------------------------------
+
+@app.route('/artists/search', methods=['POST'])
+def search_artists():
+    # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
+    # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
+    # search for "band" should return "The Wild Sax Band".
+    response = {
+        "count": 1,
+        "data": [{
+            "id": 4,
+            "name": "Guns N Petals",
+            "num_upcoming_shows": 0,
+        }]
+    }
+    return render_template('pages/search_artists.html', results=response,
+                           search_term=request.form.get('search_term', ''))
+
+#  Update Artist
+#  ----------------------------------------------------------------
+@app.route('/artists/<int:artist_id>/edit', methods=['GET'])
+def edit_artist(artist_id):
+    form = ArtistForm()
+    artist = {
+        "id": 4,
+        "name": "Guns N Petals",
+        "genres": ["Rock n Roll"],
+        "city": "San Francisco",
+        "state": "CA",
+        "phone": "326-123-5000",
+        "website": "https://www.gunsnpetalsband.com",
+        "facebook_link": "https://www.facebook.com/GunsNPetals",
+        "seeking_venue": True,
+        "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
+        "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
+    }
+    # TODO: populate form with fields from artist with ID <artist_id>
+    return render_template('forms/edit_artist.html', form=form, artist=artist)
+
+
+@app.route('/artists/<int:artist_id>/edit', methods=['POST'])
+def edit_artist_submission(artist_id):
+    # TODO: take values from the form submitted, and update existing
+    # artist record with ID <artist_id> using the new attributes
+
+    return redirect(url_for('show_artist', artist_id=artist_id))
+
+#  Delete Artist
+#  ----------------------------------------------------------------
+
+
+
+#  Read Shows
 #  ----------------------------------------------------------------
 
 @app.route('/shows')
@@ -476,6 +467,8 @@ def shows():
         .filter(Showtime.show_id == Show.id, Show.artist_id == Artist.id, Show.venue_id == Venue.id).all()
     return render_template('pages/shows.html', shows=shows)
 
+#  Create Shows
+#  ----------------------------------------------------------------
 
 @app.route('/shows/create')
 def create_shows():
@@ -496,6 +489,9 @@ def create_show_submission():
     # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
     return render_template('pages/home.html')
 
+
+#  Miscellaneous
+#  ----------------------------------------------------------------
 
 @app.errorhandler(404)
 def not_found_error(error):

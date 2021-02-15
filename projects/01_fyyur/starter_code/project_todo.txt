@@ -18,6 +18,8 @@ DONE: - VP: design db model
 DONE: - adjust SQLAlchemy model
 DONE: - python: migrate to new model + populate with dummy data
 
+########### Read:
+
 DONE: /venues
 DONE: /venues/<id>
 
@@ -30,10 +32,22 @@ DONE: /shows
 DONE: past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
 https://knowledge.udacity.com/questions/452402
 
+########### Create:
 
+/venues/create > GET
+/venues/create > POST
+
+
+########### Update:
+
+########### Delete:
+
+Search :
 /venues/search
 /artists/search
 
+
+#####################3
 
 VALID POSTGRE
 SELECT showtimes.show_id, showtimes.show_time, venues.name FROM showtimes JOIN shows ON showtimes.show_id = shows.id JOIN venues ON shows.venue_id = venues.id;
