@@ -10,6 +10,8 @@ flask run
 from app import db, Area, Artist, Venue, Show, Showtime
 from datetime import datetime, date
 
+dropdb fyyur && createdb fyyur
+
 
 DONE: - psql: create db
 DONE: - python: connect to db
@@ -39,6 +41,7 @@ https://knowledge.udacity.com/questions/452402
 
 
 ########### Update:
+
 
 ########### Delete:
 

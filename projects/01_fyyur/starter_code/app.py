@@ -5,9 +5,10 @@
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort, jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 import logging
 from logging import Formatter, FileHandler
@@ -120,32 +121,9 @@ class Showtime(db.Model):
     show_time = db.Column(db.DateTime(), primary_key=True)
 
 # ----------------------------------------------------------------------------#
-# Filters.
+# Helpers.
 # ----------------------------------------------------------------------------#
 
-def format_datetime(value, format='medium'):
-    date = dateutil.parser.parse(value)
-    if format == 'full':
-        format = "EEEE MMMM, d, y 'at' h:mma"
-    elif format == 'medium':
-        format = "EE MM, dd, y h:mma"
-    return babel.dates.format_datetime(date, format, locale='en')
-
-
-app.jinja_env.filters['datetime'] = format_datetime
-
-
-# ----------------------------------------------------------------------------#
-# Controllers.
-# ----------------------------------------------------------------------------#
-
-@app.route('/')
-def index():
-    return render_template('pages/home.html')
-
-
-#  Venues
-#  ----------------------------------------------------------------
 
 def count_shows_by(resource, upcoming=True):
 
@@ -189,6 +167,7 @@ def count_shows_by(resource, upcoming=True):
             shows_by_count[artist.id] += 1
 
     return shows_by_count
+
 
 def list_shows_by(resource, upcoming=True):
 
@@ -239,6 +218,55 @@ def list_shows_by(resource, upcoming=True):
 
     return shows_by_lists
 
+
+def build_areas_dict():
+    areas_dict = {}
+    areas = Area.query.all()
+    for area in areas:
+        key = area.city + ", " + area.state
+        value = area.id
+        areas_dict[key] = value
+    return areas_dict
+
+
+def build_venues_dict():
+    venues_dict = {}
+    venues = Venue.query.all()
+    for venue in venues:
+        key = venue.name + ", " + str(venue.area_id)
+        value = venue.id
+        venues_dict[key] = value
+    return venues_dict
+
+
+# ----------------------------------------------------------------------------#
+# Filters.
+# ----------------------------------------------------------------------------#
+
+def format_datetime(value, format='medium'):
+    date = dateutil.parser.parse(value)
+    if format == 'full':
+        format = "EEEE MMMM, d, y 'at' h:mma"
+    elif format == 'medium':
+        format = "EE MM, dd, y h:mma"
+    return babel.dates.format_datetime(date, format, locale='en')
+
+
+app.jinja_env.filters['datetime'] = format_datetime
+
+
+# ----------------------------------------------------------------------------#
+# Controllers.
+# ----------------------------------------------------------------------------#
+
+@app.route('/')
+def index():
+    return render_template('pages/home.html')
+
+
+#  Venues
+#  ----------------------------------------------------------------
+
 @app.route('/venues')
 def venues():
 
@@ -275,14 +303,58 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
 
-    # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    form = VenueForm(request.form, meta={'csrf': False})
+    if form.validate():
+        try:
+            name = form.name.data
+            city = form.city.data
+            state = form.state.data
+            address = form.address.data
+            phone = form.phone.data
+            genres = form.genres.data
+
+            # if (city, state) is a new area, insert in areas - then get area.id
+            area_string = city + ", " + state
+            areas_dict = build_areas_dict()
+
+            if area_string not in areas_dict:
+                new_area = Area(city=city, state=state)
+                db.session.add(new_area)
+
+            areas_dict = build_areas_dict()
+            area_id = areas_dict[area_string]
+
+            # if (name, area_id) is a new venue, insert in venues
+            venue_string = name + ", " + str(area_id)
+            venues_dict = build_venues_dict()
+
+            if venue_string not in venues_dict:
+                new_venue = Venue(name=name, address=address, phone=phone, area_id=area_id)
+                db.session.add(new_venue)
+
+            venues_dict = build_venues_dict()
+            venue_id = venues_dict[venue_string]
+
+            # commit changes to db
+            db.session.commit()
+            flash('Venue ' + form.name.data + ' was successfully listed!')
+
+        except SQLAlchemyError as error:
+            print(error)
+            db.session.rollback()
+            flash('An error occurred. Venue ' + form.name.data + ' could not be listed.')
+            # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+
+        finally:
+            db.session.close()
+
+    else:
+        message = []
+        for field, errors in form.errors.items():
+            message.append(field + ': (' + '|'.join(errors) + ')')
+        flash('The Venue data is not valid. Please try again!')
+
     return render_template('pages/home.html')
 
 
