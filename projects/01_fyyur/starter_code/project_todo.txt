@@ -1,10 +1,12 @@
-pg_ctl -D "C:\Program Files\PostgreSQL\13\data" start
+shell config file : C:\Users\yanni\.bash_profile
 
 cd FSND/projects/01_fyyur/starter_code
 cd projects/01_fyyur/starter_code
 
 export FLASK_APP=app.py
 export FLASK_DEBUG=true
+
+pg_ctl -D "C:\Program Files\PostgreSQL\13\data" start
 flask run
 
 from app import db, Area, Artist, Venue, Show, Showtime

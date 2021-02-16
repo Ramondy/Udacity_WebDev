@@ -100,7 +100,7 @@ class VenueForm(Form):
         'image_link'
     )
     genres = SelectMultipleField(
-        'genres', #validators=[DataRequired()],
+        'genres', validators=[DataRequired()],
         choices=genres_list
     )
     # facebook_link = StringField(

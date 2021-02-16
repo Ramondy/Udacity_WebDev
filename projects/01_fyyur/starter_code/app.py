@@ -239,6 +239,15 @@ def build_venues_dict():
     return venues_dict
 
 
+def build_genres_dict():
+    genres_dict = {}
+    genres = Genre.query.all()
+    for genre in genres:
+        key = genre.name
+        value = genre.id
+        genres_dict[key] = value
+    return genres_dict
+
 # ----------------------------------------------------------------------------#
 # Filters.
 # ----------------------------------------------------------------------------#
@@ -335,6 +344,17 @@ def create_venue_submission():
 
             venues_dict = build_venues_dict()
             venue_id = venues_dict[venue_string]
+
+            # if (genres) are new genres, insert in genres - then insert in genre_venues
+            for genre in genres:
+                if genre not in build_genres_dict():
+                    new_genre = Genre(name=genre)
+                    db.session.add(new_genre)
+
+                genres_dict = build_genres_dict()
+                genre_id = genres_dict[genre]
+                statement = genre_venues.insert().values(venue_id=venue_id, genre_id=genre_id)
+                db.session.execute(statement)
 
             # commit changes to db
             db.session.commit()
