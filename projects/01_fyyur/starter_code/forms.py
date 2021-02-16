@@ -108,20 +108,6 @@ class VenueForm(Form):
     # )
 
 
-class ShowForm(Form):
-    artist_id = StringField(
-        'artist_id'
-    )
-    venue_id = StringField(
-        'venue_id'
-    )
-    start_time = DateTimeField(
-        'start_time',
-        validators=[DataRequired()],
-        default=datetime.today()
-    )
-
-
 class ArtistForm(Form):
     name = StringField(
         'name', validators=[DataRequired()]
@@ -147,4 +133,16 @@ class ArtistForm(Form):
     #     'facebook_link', validators=[URL()]
     # )
 
-# TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
+
+class ShowForm(Form):
+    artist_id = StringField(
+        'artist_id'
+    )
+    venue_id = StringField(
+        'venue_id'
+    )
+    start_time = DateTimeField(
+        'start_time',
+        validators=[DataRequired()],
+        default=datetime.today()
+    )

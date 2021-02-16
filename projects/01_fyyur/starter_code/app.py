@@ -258,6 +258,26 @@ def build_artists_dict():
         artists_dict[key] = value
     return artists_dict
 
+
+def build_shows_dict():
+    shows_dict = {}
+    shows = Show.query.all()
+    for show in shows:
+        key = str(show.venue_id) + ", " + str(show.artist_id)
+        value = show.id
+        shows_dict[key] = value
+    return shows_dict
+
+
+def build_showtimes_dict():
+    showtimes_dict = {}
+    showtimes = Showtime.query.all()
+    for showtime in showtimes:
+        key = str(showtime.show_id) + ", " + datetime.strftime(showtime.show_time, format="%Y-%m-%d %H:%M:%S")
+        value = showtime.show_id
+        showtimes_dict[key] = value
+    return showtimes_dict
+
 # ----------------------------------------------------------------------------#
 # Filters.
 # ----------------------------------------------------------------------------#
@@ -633,15 +653,56 @@ def create_shows():
 
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
-    # called to create new shows in the db, upon submitting new show listing form
-    # TODO: insert form data as a new Show record in the db, instead
+    form = ShowForm(request.form, meta={'csrf': False})
+    if form.validate():
+        try:
+            artist_id = form.artist_id.data
+            venue_id = form.venue_id.data
+            show_time = form.start_time.data
+
+            # if (artist_id, venue_id) is a new show, insert in shows - then get show.id
+            show_string = str(venue_id) + ", " + str(artist_id)
+            shows_dict = build_shows_dict()
+
+            if show_string not in shows_dict:
+                new_show = Show(venue_id=venue_id, artist_id=artist_id)
+                db.session.add(new_show)
+
+            shows_dict = build_shows_dict()
+            show_id = shows_dict[show_string]
+
+            # if (show_id, show_time) is a new show_time, insert in showtimes
+            showtime_string = str(show_id) + ", " + datetime.strftime(show_time, format="%Y-%m-%d %H:%M:%S")
+            showtimes_dict = build_showtimes_dict()
+
+            if showtime_string not in showtimes_dict:
+                new_showtime = Showtime(show_id=show_id, show_time=show_time)
+                db.session.add(new_showtime)
+
+            # commit changes to db
+            db.session.commit()
+            flash('Show was successfully listed!')
+
+        except SQLAlchemyError as error:
+            print(error)
+            db.session.rollback()
+            flash('An error occurred. Show could not be listed.')
+            # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+
+        finally:
+            db.session.close()
+
+    else:
+        message = []
+        for field, errors in form.errors.items():
+            message.append(field + ': (' + '|'.join(errors) + ')')
+        flash('The Show data is not valid. Please try again!')
+
+    return render_template('pages/home.html')
 
     # on successful db insert, flash success
-    flash('Show was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Show could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
-    return render_template('pages/home.html')
+    #
+
 
 
 #  Miscellaneous
