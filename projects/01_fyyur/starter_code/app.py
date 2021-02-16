@@ -248,6 +248,16 @@ def build_genres_dict():
         genres_dict[key] = value
     return genres_dict
 
+
+def build_artists_dict():
+    artists_dict = {}
+    artists = Artist.query.all()
+    for artist in artists:
+        key = artist.name + ", " + str(artist.area_id)
+        value = artist.id
+        artists_dict[key] = value
+    return artists_dict
+
 # ----------------------------------------------------------------------------#
 # Filters.
 # ----------------------------------------------------------------------------#
@@ -334,7 +344,7 @@ def create_venue_submission():
             areas_dict = build_areas_dict()
             area_id = areas_dict[area_string]
 
-            # if (name, area_id) is a new venue, insert in venues
+            # if (name, area_id) is a new venue, insert in venues - then get venue.id
             venue_string = name + ", " + str(area_id)
             venues_dict = build_venues_dict()
 
@@ -482,14 +492,66 @@ def create_artist_form():
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
-    # called upon submitting the new artist listing form
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
+    form = ArtistForm(request.form, meta={'csrf': False})
+    if form.validate():
+        try:
+            name = form.name.data
+            city = form.city.data
+            state = form.state.data
+            phone = form.phone.data
+            genres = form.genres.data
 
-    # on successful db insert, flash success
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+            # if (city, state) is a new area, insert in areas - then get area.id
+            area_string = city + ", " + state
+            areas_dict = build_areas_dict()
+
+            if area_string not in areas_dict:
+                new_area = Area(city=city, state=state)
+                db.session.add(new_area)
+
+            areas_dict = build_areas_dict()
+            area_id = areas_dict[area_string]
+
+            # if (name, area_id) is a new artist, insert in artists - then get artist.id
+            artist_string = name + ", " + str(area_id)
+            artist_dict = build_artists_dict()
+
+            if artist_string not in artist_dict:
+                new_artist = Artist(name=name, phone=phone, area_id=area_id)
+                db.session.add(new_artist)
+
+            artist_dict = build_artists_dict()
+            artist_id = artist_dict[artist_string]
+
+            # if genres are new genres, insert in genres - then insert in genre_artists
+            for genre in genres:
+                if genre not in build_genres_dict():
+                    new_genre = Genre(name=genre)
+                    db.session.add(new_genre)
+
+                genres_dict = build_genres_dict()
+                genre_id = genres_dict[genre]
+                statement = genre_artists.insert().values(artist_id=artist_id, genre_id=genre_id)
+                db.session.execute(statement)
+
+            # commit changes to db
+            db.session.commit()
+            flash('Artist ' + request.form['name'] + ' was successfully listed!')
+
+        except SQLAlchemyError as error:
+            print(error)
+            db.session.rollback()
+            flash('An error occurred. Artist ' + form.name.data + ' could not be listed.')
+
+        finally:
+            db.session.close()
+
+    else:
+        message = []
+        for field, errors in form.errors.items():
+            message.append(field + ': (' + '|'.join(errors) + ')')
+        flash('The Venue data is not valid. Please try again!')
+
     return render_template('pages/home.html')
 
 

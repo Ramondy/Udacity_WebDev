@@ -9,15 +9,15 @@
         {{ form.name(class_ = 'form-control', autofocus = true) }}
       </div>
       <div class="form-group">
-          <label>City & State</label>
-          <div class="form-inline">
-            <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
-            </div>
-            <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
-            </div>
+        <label>City & State</label>
+        <div class="form-inline">
+          <div class="form-group">
+            {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
           </div>
+          <div class="form-group">
+            {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label for="address">Address</label>
@@ -35,10 +35,7 @@
 
       <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
     </form>
-
   </div>
-
-
 {% endblock %}
 
 <!--
@@ -46,26 +43,4 @@
         <label for="facebook_link">Facebook Link</label>
         {{ form.facebook_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
       </div>
-
-<script>
-      document.getElementById('content').onsubmit = function(e) {
-      e.preventDefault();
-      console.log('event', e);
-      console.log('name', document.getElementById('name').value);
-      fetch('/venues/create', {
-          method: 'POST',
-          body: JSON.stringify({
-            'name': document.getElementById('name').value,
-            'city': document.getElementById('city').value,
-            'state': document.getElementById('state').value,
-            'address': document.getElementById('address').value,
-            'phone': document.getElementById('phone').value,
-            'genres': document.getElementById('genres').selectedOptions,
-          }),
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      })
-      }
-</script>
-      -->
+-->
