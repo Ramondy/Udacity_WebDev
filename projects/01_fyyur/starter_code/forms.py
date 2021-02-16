@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
+from wtforms.validators import DataRequired, AnyOf, URL, Regexp
 
 states_list = [
             ('AL', 'AL'),
@@ -94,19 +94,27 @@ class VenueForm(Form):
         'address', validators=[DataRequired()]
     )
     phone = StringField(
-        'phone'
-    )
-    image_link = StringField(
-        'image_link'
+        'phone', validators=[DataRequired(), Regexp("^\d{3}-\d{3}-\d{4}$")]
     )
     genres = SelectMultipleField(
         'genres', validators=[DataRequired()],
         choices=genres_list
     )
-    # facebook_link = StringField(
-    #     'facebook_link', validators=[URL()]
-    # )
-
+    image_link = StringField(
+        'image_link', validators=[URL()]
+    )
+    website_link = StringField(
+        'website_link', validators=[URL()]
+    )
+    faceboook_link = StringField(
+        'faceboook_link', validators=[URL()]
+    )
+    seeking_talent = BooleanField(
+        'seeking_talent', default="checked"
+    )
+    seeking_description = StringField(
+        'seeking_description'
+    )
 
 class ArtistForm(Form):
     name = StringField(
@@ -120,18 +128,27 @@ class ArtistForm(Form):
         choices=states_list
     )
     phone = StringField(
-        'phone'
-    )
-    image_link = StringField(
-        'image_link'
+        'phone', validators=[DataRequired(), Regexp("^\d{3}-\d{3}-\d{4}$")]
     )
     genres = SelectMultipleField(
         'genres', validators=[DataRequired()],
         choices=genres_list
     )
-    # facebook_link = StringField(
-    #     'facebook_link', validators=[URL()]
-    # )
+    image_link = StringField(
+        'image_link', validators=[URL()]
+    )
+    website_link = StringField(
+        'website_link', validators=[URL()]
+    )
+    faceboook_link = StringField(
+        'faceboook_link', validators=[URL()]
+    )
+    seeking_venue = BooleanField(
+        'seeking_venue', default="checked"
+    )
+    seeking_description = StringField(
+        'seeking_description'
+    )
 
 
 class ShowForm(Form):

@@ -5,125 +5,17 @@
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for, abort, jsonify
-from flask_moment import Moment
-from flask_sqlalchemy import SQLAlchemy
+from flask import render_template, request, Response, flash, redirect, url_for, abort, jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from flask_migrate import Migrate
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
-
-# ----------------------------------------------------------------------------#
-# App Config.
-# ----------------------------------------------------------------------------#
-
-app = Flask(__name__)
-moment = Moment(app)
-app.config.from_object('config')
-db = SQLAlchemy(app)
-
-# TODO: connect to a local postgresql database
-migrate = Migrate(app, db)
-
-# ----------------------------------------------------------------------------#
-# Models.
-# ----------------------------------------------------------------------------#
-
-genre_venues = db.Table('genre_venues',
-                 db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'), primary_key=True),
-                 db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
-                 )
-
-genre_artists = db.Table('genre_artists',
-                 db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'), primary_key=True),
-                 db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True),
-                 )
-
-
-class Genre(db.Model):
-    __tablename__ = 'genres'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-
-
-class Area(db.Model):
-    __tablename__ = 'areas'
-    id = db.Column(db.Integer, primary_key=True)
-    city = db.Column(db.String())
-    state = db.Column(db.String(2))
-    venues = db.relationship('Venue', backref='area')
-    artists = db.relationship('Artist', backref='area')
-
-
-class Artist(db.Model):
-    __tablename__ = 'artists'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    phone = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-
-    # ADD MISSING FIELDS
-    website = db.Column(db.String(120))
-    seeking_venue = db.Column(db.Boolean)
-    seeking_description = db.Column(db.String(500))
-    area_id = db.Column(db.Integer, db.ForeignKey('areas.id'))
-
-    # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
-
-    # RELATIONSHIPS
-    shows = db.relationship('Show', backref='artist')
-    genres = db.relationship('Genre', secondary=genre_artists, backref=db.backref('artists', lazy=True))
-
-
-class Venue(db.Model):
-    __tablename__ = 'venues'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-
-    # ADD MISSING FIELDS
-    website = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean)
-    seeking_description = db.Column(db.String(500))
-    area_id = db.Column(db.Integer, db.ForeignKey('areas.id'))
-
-    # DERIVED FIELDS : past_shows, upcoming_shows, past_shows_count, upcoming_shows_count
-
-    # RELATIONSHIPS
-    shows = db.relationship('Show', backref='venue')
-    genres = db.relationship('Genre', secondary=genre_venues, backref=db.backref('venues', lazy=True))
-
-
-class Show(db.Model):
-    __tablename__ = 'shows'
-
-    id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'))
-    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
-
-    # RELATIONSHIPS
-    showtimes = db.relationship('Showtime', backref='show')
-
-
-class Showtime(db.Model):
-    __tablename__ = 'showtimes'
-
-    show_id = db.Column(db.Integer, db.ForeignKey('shows.id'), primary_key=True)
-    show_time = db.Column(db.DateTime(), primary_key=True)
+from models import *
 
 # ----------------------------------------------------------------------------#
 # Helpers.
 # ----------------------------------------------------------------------------#
-
 
 def count_shows_by(resource, upcoming=True):
 
@@ -352,6 +244,11 @@ def create_venue_submission():
             address = form.address.data
             phone = form.phone.data
             genres = form.genres.data
+            image_link = form.image_link.data
+            website_link = form.website_link.data
+            facebook_link = form.faceboook_link.data
+            seeking_talent = form.seeking_talent.data
+            seeking_description = form.seeking_description.data
 
             # if (city, state) is a new area, insert in areas - then get area.id
             area_string = city + ", " + state
@@ -369,7 +266,9 @@ def create_venue_submission():
             venues_dict = build_venues_dict()
 
             if venue_string not in venues_dict:
-                new_venue = Venue(name=name, address=address, phone=phone, area_id=area_id)
+                new_venue = Venue(name=name, address=address, phone=phone, area_id=area_id, image_link=image_link,
+                                  website=website_link, facebook_link=facebook_link, seeking_talent=seeking_talent,
+                                  seeking_description=seeking_description)
                 db.session.add(new_venue)
 
             venues_dict = build_venues_dict()
@@ -520,6 +419,11 @@ def create_artist_submission():
             state = form.state.data
             phone = form.phone.data
             genres = form.genres.data
+            image_link = form.image_link.data
+            website_link = form.website_link.data
+            facebook_link = form.faceboook_link.data
+            seeking_venue = form.seeking_venue.data
+            seeking_description = form.seeking_description.data
 
             # if (city, state) is a new area, insert in areas - then get area.id
             area_string = city + ", " + state
@@ -537,7 +441,9 @@ def create_artist_submission():
             artist_dict = build_artists_dict()
 
             if artist_string not in artist_dict:
-                new_artist = Artist(name=name, phone=phone, area_id=area_id)
+                new_artist = Artist(name=name, phone=phone, area_id=area_id, image_link=image_link,
+                                  website=website_link, facebook_link=facebook_link, seeking_venue=seeking_venue,
+                                  seeking_description=seeking_description)
                 db.session.add(new_artist)
 
             artist_dict = build_artists_dict()
