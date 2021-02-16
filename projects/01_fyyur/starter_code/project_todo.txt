@@ -44,8 +44,8 @@ DONE: /shows/create > POST
 
 
 ########### Search :
-/venues/search
-/artists/search
+DONE: /venues/search
+DONE: /artists/search
 
 
 ########### Update:
