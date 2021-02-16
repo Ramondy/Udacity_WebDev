@@ -38,18 +38,25 @@ https://knowledge.udacity.com/questions/452402
 
 ########### Create:
 
-/venues/create > GET
-/venues/create > POST
+DONE: /venues/create > POST
+DONE: /artist/create > POST
+DONE: /shows/create > POST
+
+
+########### Search :
+/venues/search
+/artists/search
 
 
 ########### Update:
 
 
+
 ########### Delete:
 
-Search :
-/venues/search
-/artists/search
+
+
+
 
 
 #####################3
