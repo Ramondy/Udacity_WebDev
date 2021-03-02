@@ -1,4 +1,4 @@
-shell config file : C:\Users\yanni\.bash_profile
+shell config file : C:\Users\yanni\.bashrc
 
 cd FSND/projects/01_fyyur/starter_code
 cd projects/01_fyyur/starter_code

@@ -68,6 +68,13 @@ class Artist(db.Model):
     shows = db.relationship('Show', backref='artist')
     genres = db.relationship('Genre', secondary=genre_artists, backref=db.backref('artists', lazy=True))
 
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'phone': self.phone
+        }
+
 
 class Venue(db.Model):
     __tablename__ = 'venues'

@@ -374,11 +374,23 @@ def delete_venue(venue_id):
 #  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
-    # TODO: replace with real data returned from querying the database
 
     data = Artist.query.all()
     return render_template('pages/artists.html', artists=data,
                            upcoming_counter=count_shows_by(resource='Artist', upcoming=True))
+
+
+@app.route('/api/artists')
+def api_artists():
+
+    artists = Artist.query.all()
+    data = [artist.format() for artist in artists]
+
+    return jsonify({
+        'success': True,
+        'artists': data,
+        'total_artists': len(data)
+    })
 
 
 @app.route('/artists/<int:artist_id>')
