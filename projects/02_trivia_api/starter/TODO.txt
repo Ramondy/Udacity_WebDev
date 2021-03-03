@@ -1,18 +1,23 @@
 shell config file : C:\Users\yanni\.bashrc
 
+# start psql server:
 pg_ctl -D "C:\Program Files\PostgreSQL\13\data" start
 
+# start flask backend:
 cd FSND/projects/02_trivia_api/starter/backend
-
 export FLASK_APP=flaskr
 export FLASK_DEBUG=true
 flask run
 
+# start react frontend:
+cd FSND/projects/02_trivia_api/starter/frontend
+npm start
 
-Testing -- To run the tests:
 
-dropdb && createdb trivia_test
+# run the tests:
+
 cd FSND/projects/02_trivia_api/starter/backend
+dropdb trivia_test && createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 
@@ -44,7 +49,7 @@ DONE : Use Flask-CORS to enable cross-domain requests and set response headers.
 DONE : Create an endpoint to handle GET requests for all available categories.
 DONE : Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
 DONE : Create a GET (not POST) endpoint to get questions based on category.
-7. Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
+DONE : Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
 
 4. Create an endpoint to DELETE question using a question ID.
 5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
