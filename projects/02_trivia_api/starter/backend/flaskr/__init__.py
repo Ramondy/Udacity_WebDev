@@ -66,7 +66,6 @@ def create_app(test_config=None):
             elif return_type == 'dict':
                 return response
 
-
     '''
     @TODO: 
     Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). 
@@ -117,13 +116,31 @@ def create_app(test_config=None):
     '''
     @TODO: 
     Create a POST endpoint to get questions based on a search term. 
-    It should return any questions for whom the search term 
-    is a substring of the question. 
+    It should return any questions for whom the search term is a substring of the question. 
     
-    TEST: Search by any phrase. The questions list will update to include 
-    only question that include that string within their question. 
-    Try using the word "title" to start. 
+    TEST: Search by any phrase. The questions list will update to include only question that include that string within 
+    their question. Try using the word "title" to start. 
     '''
+    @app.route('/questions', methods=['POST'])
+    def search_questions():
+
+        body = request.get_json()
+        search_term = "%{}%".format(body['searchTerm']).lower()
+
+        selection = Question.query.filter(Question.question.like(search_term)).all()
+        current_questions = paginate_questions(request, selection)
+
+        if len(current_questions) == 0:
+            abort(404)
+
+        else:
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'total_questions': len(selection),
+                'current_category': None,
+                'search_term': search_term
+            })
 
     '''
     @TODO: 
