@@ -1,0 +1,65 @@
+shell config file : C:\Users\yanni\.bashrc
+
+pg_ctl -D "C:\Program Files\PostgreSQL\13\data" start
+
+cd FSND/projects/02_trivia_api/starter/backend
+
+export FLASK_APP=flaskr
+export FLASK_DEBUG=true
+flask run
+
+
+Testing -- To run the tests:
+
+dropdb && createdb trivia_test
+cd FSND/projects/02_trivia_api/starter/backend
+psql trivia_test < trivia.psql
+python test_flaskr.py
+
+##########################################################################
+
+### Backend
+
+The `./backend` directory contains a partially completed Flask and SQLAlchemy server. You will work primarily in __init__.py
+ to define your endpoints and can reference models.py for DB and SQLAlchemy setup.
+
+### Frontend
+
+The `./frontend` directory contains a complete React frontend to consume the data from the Flask server.
+You will need to update the endpoints after you define them in the backend.
+Those areas are marked with TODO and can be searched for expediency.
+
+Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API.
+
+##########################################################################
+
+## Backend Tasks
+
+One note before you delve into your tasks: for each endpoint you are expected to define the endpoint and response data.
+The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already.
+You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend
+or you will get some unexpected behavior.
+
+DONE : Use Flask-CORS to enable cross-domain requests and set response headers.
+DONE : Create an endpoint to handle GET requests for all available categories.
+DONE : Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
+DONE : Create a GET (not POST) endpoint to get questions based on category.
+
+4. Create an endpoint to DELETE question using a question ID.
+5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
+
+7. Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
+8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
+9. Create error handlers for all expected errors including 400, 404, 422 and 500.
+
+##########################################################################
+
+## Frontend
+
+The frontend should be fairly straightforward and disgestible. You'll primarily work within the ```components``` folder
+in order to edit the endpoints utilized by the components. While working on your backend request handling and response formatting,
+you can reference the frontend to view how it parses the responses.
+
+After you complete your endpoints, ensure you return to and update the frontend to make request and handle responses appropriately:
+- Correct endpoints
+- Update response body handling
