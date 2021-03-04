@@ -118,42 +118,64 @@ def create_app(test_config=None):
 
     '''
     @TODO: 
-    Create an endpoint to POST a new question, 
-    which will require the question and answer text, 
-    category, and difficulty score.
+    Create an endpoint to POST a new question, which will require the question and 
+    answer text, category, and difficulty score.
     
-    TEST: When you submit a question on the "Add" tab, 
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.  
+    TEST: When you submit a question on the "Add" tab, the form will clear 
+    and the question will appear at the end of the last page of the questions list 
+    in the "List" tab.  
     '''
-
     '''
     @TODO: 
     Create a POST endpoint to get questions based on a search term. 
     It should return any questions for whom the search term is a substring of the question. 
-    
+
     TEST: Search by any phrase. The questions list will update to include only question that include that string within 
     their question. Try using the word "title" to start. 
     '''
     @app.route('/questions', methods=['POST'])
-    def search_questions():
+    def search_or_post_questions():
 
         body = request.get_json()
-        search_term = "%{}%".format(body['searchTerm']).lower()
 
-        selection = Question.query.filter(Question.question.ilike(search_term)).all()
-        current_questions = paginate_questions(request, selection)
+        if body['search'] is True:
 
-        if len(current_questions) == 0:
-            abort(404)
+            search_term = "%{}%".format(body['searchTerm']).lower()
 
-        else:
-            return jsonify({
-                'success': True,
-                'questions': current_questions,
-                'total_questions': len(selection),
-                'current_category': None
-            })
+            selection = Question.query.filter(Question.question.ilike(search_term)).all()
+            current_questions = paginate_questions(request, selection)
+
+            if len(current_questions) == 0:
+                abort(404)
+
+            else:
+                return jsonify({
+                    'success': True,
+                    'questions': current_questions,
+                    'total_questions': len(selection),
+                    'current_category': None
+                })
+
+        if body['search'] is False:
+
+            question = body.get('question', None)
+            answer = body.get('answer', None)
+            difficulty = body.get('difficulty', None)
+            category = body.get('category', None)
+
+            try:
+                new_question = Question(question=question, answer=answer,
+                                        category=category, difficulty=difficulty)
+                new_question.insert()
+
+                return jsonify({
+                    'success': True,
+                    'created_id': new_question.id,
+                })
+
+            except:
+                abort(405)
+
 
     '''
     @TODO: 
@@ -216,6 +238,14 @@ def create_app(test_config=None):
             "error": 404,
             "message": "resource not found"
         }), 404
+
+    @app.errorhandler(405)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 405,
+            "message": "method not allowed"
+        }), 405
 
     @app.errorhandler(422)
     def unprocessable(error):

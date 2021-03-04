@@ -39,6 +39,7 @@ class FormView extends Component {
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify({
+        search: false,
         question: this.state.question,
         answer: this.state.answer,
         difficulty: this.state.difficulty,

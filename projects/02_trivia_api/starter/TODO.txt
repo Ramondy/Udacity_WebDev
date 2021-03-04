@@ -50,9 +50,8 @@ DONE : Create an endpoint to handle GET requests for all available categories.
 DONE : Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
 DONE : Create a GET (not POST) endpoint to get questions based on category.
 DONE : Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
-
-4. Create an endpoint to DELETE question using a question ID.
-5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
+DONE : Create an endpoint to DELETE question using a question ID.
+DONE : Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
 9. Create error handlers for all expected errors including 400, 404, 422 and 500.
 
@@ -67,3 +66,10 @@ you can reference the frontend to view how it parses the responses.
 After you complete your endpoints, ensure you return to and update the frontend to make request and handle responses appropriately:
 - Correct endpoints
 - Update response body handling
+
+
+##########################################################################
+
+curl http://127.0.0.1:5000/questions -X POST --header "Content-Type: application/json" --data '{"search":true, "searchTerm":"lake"}'
+
+curl http://127.0.0.1:5000/questions -X POST --header "Content-Type: application/json" --data '{"search":false, "question":"what is love again?", "answer":"please baby stop!", "category":"5", "difficulty":"2"}'
