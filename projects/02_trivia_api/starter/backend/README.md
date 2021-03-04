@@ -67,29 +67,79 @@ One note before you delve into your tasks: for each endpoint you are expected to
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
 REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
 
-Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
+## Endpoints
+- GET '/categories'
+- GET '/questions'
+- DELETE '/questions/<int:question_id>'
+- GET '/categories/<int:category_id>/questions'
+- POST '/questions'
+- POST '/quizzes'
+
 
 GET '/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Fetches a dictionary of categories in which the keys are the ids and the values are the corresponding string of the category list
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs. 
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
+  
+GET '/questions'
+- Fetches a dictionary containing a list of paginated questions, the number of questions in the db, the current category, a dict of categories.
+- Request Arguments: None
+- Returns: An object with four keys
+{'questions': list of paginated questions (set to 10 questions per page),
+'total_questions': total number of questions in the db,
+'categories': dict of categories, similar to the return of the GET '/categories' endpoint
+'current_category': None}
 
-```
+DELETE '/questions/<int:question_id>'
+- Deletes a question from the db
+- Request Arguments: <int:question_id>, indicating the id of the question to delete
+- Returns: An object with one key
+{'deleted_id': id of the item deleted}
 
+GET '/categories/<int:category_id>/questions'
+- Fetches a dictionary containing - for a given category - a list of paginated questions, the number of questions in that category, the current category.
+- Request Arguments: <int:category_id>, indicating the id of the selected category 
+- Returns: An object with three keys
+{'questions': list of paginated questions from the selected category (set to 10 questions per page),
+'total_questions': total number of questions in this category,
+'current_category': id of the selected category}
 
+POST '/questions'
+- Handles both a search on the question set and posting a new question to the db 
+- the intent is specified by using a "search" boolean argument
+- Request Arguments:
+{'search': boolean,
+  if search:
+    'searchTerm': string
+  if not search:
+    "question": string, "answer": string, "category": str(int), "difficulty": str(int)
+}
+- Returns:
+  if search: an object with three keys
+    {'questions': list of questions containing the searchTerm,
+    'total_questions': total number of questions containing the searchTerm,
+    'current_category': None}
+  if not search: an object with one key
+    {'created_id': id of the item created}
+
+POST '/quizzes'
+- Fetches a new question from a given category, given a history of previously selected questions - or None if the category is spent
+- Request Arguments:
+{'previous_questions': a list of question_id of questions already asked,
+'quiz_category': a dict {"id": int}, int indicating the category_id from which to select
+}
+- Returns: An object with one key
+{'question': a Question object formatted as a dict  {'id': int, 'question': str, 'answer': str, 'category': str, 'difficulty': str}
+or
+{'question': None} if the category is spent
+  
 ## Testing
 To run the tests, run
 ```

@@ -55,9 +55,7 @@ def create_app(test_config=None):
 
         else:
             response = {
-                'success': True,
                 'categories': categories,
-                'total_categories': len(selection)
             }
 
             if return_type == 'json':
@@ -87,7 +85,6 @@ def create_app(test_config=None):
 
         else:
             return jsonify({
-                'success': True,
                 'questions': current_questions,
                 'total_questions': len(selection),
                 'categories': categories,
@@ -111,10 +108,36 @@ def create_app(test_config=None):
         selection.delete()
 
         return jsonify({
-            'success': True,
-            'deleted_id': str(selection.id)
+            'deleted_id': selection.id
         })
 
+    '''
+    @TODO: 
+    Create a GET endpoint to get questions based on category. 
+
+    TEST: In the "List" tab / main screen, clicking on one of the categories in the left column will cause 
+    only questions of that category to be shown. 
+    '''
+    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+    def get_questions_by_category(category_id):
+
+        try:
+            selection = Question.query.filter(Question.category == category_id).all()
+            current_questions = paginate_questions(request, selection)
+            current_category = str(category_id)
+
+            if len(current_questions) == 0:
+                abort(404)
+
+            else:
+                return jsonify({
+                    'questions': current_questions,
+                    'total_questions': len(selection),
+                    'current_category': current_category
+                })
+
+        except:
+            abort(400)
 
     '''
     @TODO: 
@@ -150,7 +173,6 @@ def create_app(test_config=None):
 
             else:
                 return jsonify({
-                    'success': True,
                     'questions': current_questions,
                     'total_questions': len(selection),
                     'current_category': None
@@ -169,42 +191,11 @@ def create_app(test_config=None):
                 new_question.insert()
 
                 return jsonify({
-                    'success': True,
                     'created_id': new_question.id,
                 })
 
             except:
                 abort(405)
-
-
-    '''
-    @TODO: 
-    Create a GET endpoint to get questions based on category. 
-    
-    TEST: In the "List" tab / main screen, clicking on one of the categories in the left column will cause 
-    only questions of that category to be shown. 
-    '''
-    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
-    def get_questions_by_category(category_id):
-
-        try:
-            selection = Question.query.filter(Question.category == category_id).all()
-            current_questions = paginate_questions(request, selection)
-            current_category = str(category_id)
-
-            if len(current_questions) == 0:
-                abort(404)
-
-            else:
-                return jsonify({
-                    'success': True,
-                    'questions': current_questions,
-                    'total_questions': len(selection),
-                    'current_category': current_category
-                })
-
-        except:
-            abort(400)
 
     '''
     @TODO: 
@@ -217,6 +208,38 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
+    @app.route('/quizzes', methods=['POST'])
+    def get_next_question():
+
+        body = request.get_json()
+
+        previous_questions = body.get('previous_questions', None)  # list of ids: int
+        quiz_category = body['quiz_category']['id']  # body['quiz_category'] is a dict
+
+        if quiz_category == 0:
+            question_set = Question.query.filter(Question.id.notin_(previous_questions))
+
+        else:
+            question_set = Question.query.filter(Question.id.notin_(previous_questions),
+                                                 Question.category == quiz_category)
+
+        row_count = int(question_set.count())
+
+        if row_count == 0:
+            # to end the game when all questions in a category have been played
+
+            return jsonify({
+                # 'success': True,
+                'question': None
+            })
+
+        else:
+            current_question = question_set.offset(int(row_count * random.random())).first()
+
+            return jsonify({
+                # 'success': True,
+                'question': current_question.format()  # a formatted Question object
+            })
 
     '''
     @TODO: 
@@ -254,6 +277,14 @@ def create_app(test_config=None):
             "error": 422,
             "message": "unprocessable"
         }), 422
+
+    @app.errorhandler(500)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "message": "internal server error"
+        }), 500
 
     return app
 

@@ -45,6 +45,7 @@ class QuizView extends Component {
 
   getNextQuestion = () => {
     const previousQuestions = [...this.state.previousQuestions]
+    console.log(this.state.quizCategory)
     if(this.state.currentQuestion.id) { previousQuestions.push(this.state.currentQuestion.id) }
 
     $.ajax({
@@ -85,6 +86,7 @@ class QuizView extends Component {
       numCorrect: !evaluate ? this.state.numCorrect : this.state.numCorrect + 1,
       showAnswer: true,
     })
+    console.log(this.state.numCorrect)
   }
 
   restartGame = () => {
