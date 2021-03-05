@@ -2,6 +2,7 @@
 __pycache__
 venv
 frontend/node_modules/*
+backend/.env
 
 # OS generated files #
 ######################

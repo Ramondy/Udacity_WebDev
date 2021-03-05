@@ -15,10 +15,11 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_authentication = 'postgres:uDacity$'
-        self.database_host = 'localhost:5432'
-        self.database_path = "postgresql://{}@{}/{}".format(self.database_authentication,
-                                                            self.database_host, self.database_name)
+        self.database_user = os.getenv('DBUSER')
+        self.database_pw = os.getenv('DBPW')
+        self.database_host = os.getenv('DBHOST')
+        self.database_path = "postgresql://{}:{}@{}/{}".format(self.database_user, self.database_pw,
+                                                               self.database_host, self.database_name)
         self.new_question = {
             "search": False,
             "question": "what is love?",
@@ -84,12 +85,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['message'], 'resource not found')
 
-    # def test_post_question(self):
-    #     res = self.client().post('/questions', json=self.new_question)
-    #     data = json.loads(res.data)
-    #
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertTrue(data['created_id'])
+    def test_post_question(self):
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['created_id'])
 
     def test_405_post_question(self):
         res = self.client().post('/questions/45', json=self.new_question)
@@ -113,12 +114,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data['message'], 'bad request')
 
-    # def test_delete_question(self):
-    #     res = self.client().delete('/questions/5')
-    #     data = json.loads(res.data)
-    #
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertTrue(data['deleted_id'])
+    def test_delete_question(self):
+        res = self.client().delete('/questions/5')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['deleted_id'])
 
     def test_404_delete_question(self):
         res = self.client().delete('/questions/1000')
