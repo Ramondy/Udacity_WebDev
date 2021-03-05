@@ -3,6 +3,7 @@ __pycache__
 venv
 frontend/node_modules/*
 backend/.env
+TODO.txt
 
 # OS generated files #
 ######################
