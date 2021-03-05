@@ -92,6 +92,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['created_id'])
 
+        return data['created_id']
+
     def test_405_post_question(self):
         res = self.client().post('/questions/45', json=self.new_question)
         data = json.loads(res.data)
@@ -115,7 +117,10 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'bad request')
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/5')
+
+        id = self.test_post_question()
+
+        res = self.client().delete('/questions/'+str(id))
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
