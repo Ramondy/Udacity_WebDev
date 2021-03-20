@@ -2,6 +2,9 @@ venv/
 .vscode/
 __pycache__/
 test.db
+practice/
+backend/src/.env
+TODO.txt
 
 # OS generated files #
 ######################

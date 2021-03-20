@@ -16,5 +16,5 @@ database_name = "fyyur"
 database_user = os.getenv('DBUSER')
 database_pw = os.getenv('DBPW')
 database_host = os.getenv('DBHOST')
-SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(database_user, database_pw, database_host, database_name)
-# 'postgresql+psycopg2://postgres:uDacity$@localhost:5432/fyyur'
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(database_user, database_pw,
+                                                                     database_host, database_name)
