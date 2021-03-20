@@ -39,7 +39,10 @@ def get_drinks():
             "drinks": drinks
         }), 200
     except:
-        abort(400)
+        raise AuthError({
+            'code': 'not_found',
+            'description': 'Resource not found.'
+        }, 404)
 
 '''
 @TODO implement endpoint
@@ -60,7 +63,10 @@ def get_drinks_details(payload):
             "drinks": drinks
         }), 200
     except:
-        abort(400)
+        raise AuthError({
+            'code': 'not_found',
+            'description': 'Resource not found.'
+        }, 404)
 
 '''
 @TODO implement endpoint
@@ -89,7 +95,10 @@ def post_drinks(payload):
         }), 200
 
     except:
-        abort(400)
+        raise AuthError({
+            'code': 'bad_request',
+            'description': 'Unable to post new resource.'
+        }, 400)
 
 '''
 @TODO implement endpoint
@@ -114,7 +123,10 @@ def patch_drinks(payload, drink_id):
         selection = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
         if selection is None:
-            abort(404)
+            raise AuthError({
+                'code': 'not_found',
+                'description': 'Resource not found.'
+            }, 404)
 
         if title is not None:
             selection.title = title
@@ -129,7 +141,10 @@ def patch_drinks(payload, drink_id):
             "drinks": [selection.long()]
         }), 200
     except:
-        abort(400)
+        raise AuthError({
+            'code': 'bad_request',
+            'description': 'Unable to patch resource.'
+        }, 400)
 
 '''
 @TODO implement endpoint
@@ -148,7 +163,10 @@ def delete_drink(payload, drink_id):
         selection = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
         if selection is None:
-            abort(404)
+            raise AuthError({
+                'code': 'not_found',
+                'description': 'Resource not found.'
+            }, 404)
 
         selection.delete()
 
@@ -158,7 +176,10 @@ def delete_drink(payload, drink_id):
         }), 200
 
     except:
-        abort(400)
+        raise AuthError({
+            'code': 'bad_request',
+            'description': 'Unable to delete resource.'
+        }, 400)
 
 
 

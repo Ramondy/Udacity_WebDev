@@ -85,7 +85,7 @@ def check_permissions(permission, payload):
         raise AuthError({
             'code': 'unauthorized',
             'description': 'Permission not found.'
-        }, 403)
+        }, 401)
 
     return True
 
@@ -153,11 +153,13 @@ def verify_decode_jwt(token):
                 'code': 'invalid_claims',
                 'description': 'Incorrect claims. Please, check the audience and issuer.'
             }, 401)
+
         except Exception:
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token.'
             }, 400)
+
     raise AuthError({
         'code': 'invalid_header',
         'description': 'Unable to find the appropriate key.'
@@ -179,10 +181,15 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
+
             try:
                 payload = verify_decode_jwt(token)
+
             except:
-                abort(401)
+                raise AuthError({
+                    'code': 'invalid_token',
+                    'description': 'Invalid token.'
+                }, 401)
 
             check_permissions(permission, payload)
 
